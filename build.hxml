@@ -2,5 +2,5 @@
 -main Main
 -dce full
 -D analyzer
--lib tink_core tink_lang pushstate
---connect 192.168.1.53:2222
+-lib tink_core tink_lang pushstate minject
+--connect 192.168.1.53:2223

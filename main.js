@@ -6,9 +6,24 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var Api = function() {
+	this.enviroment = "d";
+};
+$hxClasses["Api"] = Api;
+Api.__name__ = ["Api"];
+Api.prototype = {
+	doDefault: function() {
+		console.log(this.enviroment);
+	}
+	,doUser: function() {
+		console.log(1);
+		console.log(this.enviroment);
+	}
+	,__class__: Api
+};
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
-HxOverrides.__name__ = true;
+HxOverrides.__name__ = ["HxOverrides"];
 HxOverrides.dateStr = function(date) {
 	var m = date.getMonth() + 1;
 	var d = date.getDate();
@@ -76,7 +91,7 @@ var List = function() {
 	this.length = 0;
 };
 $hxClasses["List"] = List;
-List.__name__ = true;
+List.__name__ = ["List"];
 List.prototype = {
 	add: function(item) {
 		var x = [item];
@@ -86,31 +101,26 @@ List.prototype = {
 	}
 	,__class__: List
 };
-var Api = function() {
-};
-$hxClasses["Api"] = Api;
-Api.__name__ = true;
-Api.prototype = {
-	doUser: function() {
-		console.log("CALLED");
-	}
-	,__class__: Api
-};
 var Main = function() {
 	this._signal = [];
 	this.signal = tink_core__$Signal_SignalTrigger_$Impl_$.asSignal(this._signal);
 	var handlers;
 	this.signal = tink_core__$Signal_SignalTrigger_$Impl_$.asSignal(handlers = tink_core__$Signal_Signal_$Impl_$.trigger());
-	var this1 = tink_core__$Signal_Signal_$Impl_$.next(this.get_signal());
+	var this1 = tink_core__$Signal_Signal_$Impl_$.gather(this.get_signal());
 	this1(function(v) {
-		new haxe_web_Dispatch(v,new haxe_ds_StringMap()).runtimeDispatch(haxe_web_Dispatch.extractConfig(new Api()));
+		var injector = new minject_Injector();
+		injector.mapType("String","enviroment",null).toValue("fff");
+		if(v == "/pippa.html") v = "";
+		var api = injector._instantiate(Api);
+		new haxe_web_Dispatch(v,new haxe_ds_StringMap()).runtimeDispatch(haxe_web_Dispatch.extractConfig(api));
 	});
 	pushstate_PushState.addEventListener(null,null,function(url) {
+		console.log(url);
 		tink_core__$Callback_CallbackList_$Impl_$.invoke(handlers,url);
 	});
 };
 $hxClasses["Main"] = Main;
-Main.__name__ = true;
+Main.__name__ = ["Main"];
 Main.main = function() {
 	pushstate_PushState.init();
 	new Main();
@@ -120,11 +130,12 @@ Main.prototype = {
 		return this.signal;
 	}
 	,__class__: Main
+	,__properties__: {get_signal:"get_signal"}
 };
-Math.__name__ = true;
+Math.__name__ = ["Math"];
 var Reflect = function() { };
 $hxClasses["Reflect"] = Reflect;
-Reflect.__name__ = true;
+Reflect.__name__ = ["Reflect"];
 Reflect.field = function(o,field) {
 	try {
 		return o[field];
@@ -148,7 +159,7 @@ Reflect.isFunction = function(f) {
 };
 var Std = function() { };
 $hxClasses["Std"] = Std;
-Std.__name__ = true;
+Std.__name__ = ["Std"];
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
@@ -160,9 +171,14 @@ Std.parseInt = function(x) {
 };
 var Type = function() { };
 $hxClasses["Type"] = Type;
-Type.__name__ = true;
+Type.__name__ = ["Type"];
 Type.getSuperClass = function(c) {
 	return c.__super__;
+};
+Type.getClassName = function(c) {
+	var a = c.__name__;
+	if(a == null) return null;
+	return a.join(".");
 };
 Type.resolveClass = function(name) {
 	var cl = $hxClasses[name];
@@ -173,6 +189,32 @@ Type.resolveEnum = function(name) {
 	var e = $hxClasses[name];
 	if(e == null || !e.__ename__) return null;
 	return e;
+};
+Type.createInstance = function(cl,args) {
+	var _g = args.length;
+	switch(_g) {
+	case 0:
+		return new cl();
+	case 1:
+		return new cl(args[0]);
+	case 2:
+		return new cl(args[0],args[1]);
+	case 3:
+		return new cl(args[0],args[1],args[2]);
+	case 4:
+		return new cl(args[0],args[1],args[2],args[3]);
+	case 5:
+		return new cl(args[0],args[1],args[2],args[3],args[4]);
+	case 6:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5]);
+	case 7:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
+	case 8:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+	default:
+		throw new js__$Boot_HaxeError("Too many arguments");
+	}
+	return null;
 };
 Type.createEmptyInstance = function(cl) {
 	function empty() {}; empty.prototype = cl.prototype;
@@ -202,13 +244,13 @@ Type.getEnumConstructs = function(e) {
 };
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
-haxe_IMap.__name__ = true;
+haxe_IMap.__name__ = ["haxe","IMap"];
 var haxe__$Int64__$_$_$Int64 = function(high,low) {
 	this.high = high;
 	this.low = low;
 };
 $hxClasses["haxe._Int64.___Int64"] = haxe__$Int64__$_$_$Int64;
-haxe__$Int64__$_$_$Int64.__name__ = true;
+haxe__$Int64__$_$_$Int64.__name__ = ["haxe","_Int64","___Int64"];
 haxe__$Int64__$_$_$Int64.prototype = {
 	__class__: haxe__$Int64__$_$_$Int64
 };
@@ -226,7 +268,7 @@ var haxe_Unserializer = function(buf) {
 	this.setResolver(r);
 };
 $hxClasses["haxe.Unserializer"] = haxe_Unserializer;
-haxe_Unserializer.__name__ = true;
+haxe_Unserializer.__name__ = ["haxe","Unserializer"];
 haxe_Unserializer.initCodes = function() {
 	var codes = [];
 	var _g1 = 0;
@@ -554,11 +596,121 @@ haxe_Unserializer.prototype = {
 	}
 	,__class__: haxe_Unserializer
 };
+var haxe_ds_ArraySort = function() { };
+$hxClasses["haxe.ds.ArraySort"] = haxe_ds_ArraySort;
+haxe_ds_ArraySort.__name__ = ["haxe","ds","ArraySort"];
+haxe_ds_ArraySort.sort = function(a,cmp) {
+	haxe_ds_ArraySort.rec(a,cmp,0,a.length);
+};
+haxe_ds_ArraySort.rec = function(a,cmp,from,to) {
+	var middle = from + to >> 1;
+	if(to - from < 12) {
+		if(to <= from) return;
+		var _g = from + 1;
+		while(_g < to) {
+			var i = _g++;
+			var j = i;
+			while(j > from) {
+				if(cmp(a[j],a[j - 1]) < 0) haxe_ds_ArraySort.swap(a,j - 1,j); else break;
+				j--;
+			}
+		}
+		return;
+	}
+	haxe_ds_ArraySort.rec(a,cmp,from,middle);
+	haxe_ds_ArraySort.rec(a,cmp,middle,to);
+	haxe_ds_ArraySort.doMerge(a,cmp,from,middle,to,middle - from,to - middle);
+};
+haxe_ds_ArraySort.doMerge = function(a,cmp,from,pivot,to,len1,len2) {
+	var first_cut;
+	var second_cut;
+	var len11;
+	var len22;
+	var new_mid;
+	if(len1 == 0 || len2 == 0) return;
+	if(len1 + len2 == 2) {
+		if(cmp(a[pivot],a[from]) < 0) haxe_ds_ArraySort.swap(a,pivot,from);
+		return;
+	}
+	if(len1 > len2) {
+		len11 = len1 >> 1;
+		first_cut = from + len11;
+		second_cut = haxe_ds_ArraySort.lower(a,cmp,pivot,to,first_cut);
+		len22 = second_cut - pivot;
+	} else {
+		len22 = len2 >> 1;
+		second_cut = pivot + len22;
+		first_cut = haxe_ds_ArraySort.upper(a,cmp,from,pivot,second_cut);
+		len11 = first_cut - from;
+	}
+	haxe_ds_ArraySort.rotate(a,cmp,first_cut,pivot,second_cut);
+	new_mid = first_cut + len22;
+	haxe_ds_ArraySort.doMerge(a,cmp,from,first_cut,new_mid,len11,len22);
+	haxe_ds_ArraySort.doMerge(a,cmp,new_mid,second_cut,to,len1 - len11,len2 - len22);
+};
+haxe_ds_ArraySort.rotate = function(a,cmp,from,mid,to) {
+	var n;
+	if(from == mid || mid == to) return;
+	n = haxe_ds_ArraySort.gcd(to - from,mid - from);
+	while(n-- != 0) {
+		var val = a[from + n];
+		var shift = mid - from;
+		var p1 = from + n;
+		var p2 = from + n + shift;
+		while(p2 != from + n) {
+			a[p1] = a[p2];
+			p1 = p2;
+			if(to - p2 > shift) p2 += shift; else p2 = from + (shift - (to - p2));
+		}
+		a[p1] = val;
+	}
+};
+haxe_ds_ArraySort.gcd = function(m,n) {
+	while(n != 0) {
+		var t = m % n;
+		m = n;
+		n = t;
+	}
+	return m;
+};
+haxe_ds_ArraySort.upper = function(a,cmp,from,to,val) {
+	var len = to - from;
+	var half;
+	var mid;
+	while(len > 0) {
+		half = len >> 1;
+		mid = from + half;
+		if(cmp(a[val],a[mid]) < 0) len = half; else {
+			from = mid + 1;
+			len = len - half - 1;
+		}
+	}
+	return from;
+};
+haxe_ds_ArraySort.lower = function(a,cmp,from,to,val) {
+	var len = to - from;
+	var half;
+	var mid;
+	while(len > 0) {
+		half = len >> 1;
+		mid = from + half;
+		if(cmp(a[mid],a[val]) < 0) {
+			from = mid + 1;
+			len = len - half - 1;
+		} else len = half;
+	}
+	return from;
+};
+haxe_ds_ArraySort.swap = function(a,i,j) {
+	var tmp = a[i];
+	a[i] = a[j];
+	a[j] = tmp;
+};
 var haxe_ds_IntMap = function() {
 	this.h = { };
 };
 $hxClasses["haxe.ds.IntMap"] = haxe_ds_IntMap;
-haxe_ds_IntMap.__name__ = true;
+haxe_ds_IntMap.__name__ = ["haxe","ds","IntMap"];
 haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
 haxe_ds_IntMap.prototype = {
 	__class__: haxe_ds_IntMap
@@ -568,7 +720,7 @@ var haxe_ds_ObjectMap = function() {
 	this.h.__keys__ = { };
 };
 $hxClasses["haxe.ds.ObjectMap"] = haxe_ds_ObjectMap;
-haxe_ds_ObjectMap.__name__ = true;
+haxe_ds_ObjectMap.__name__ = ["haxe","ds","ObjectMap"];
 haxe_ds_ObjectMap.__interfaces__ = [haxe_IMap];
 haxe_ds_ObjectMap.prototype = {
 	set: function(key,value) {
@@ -582,7 +734,7 @@ var haxe_ds_StringMap = function() {
 	this.h = { };
 };
 $hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
-haxe_ds_StringMap.__name__ = true;
+haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
 haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
 haxe_ds_StringMap.prototype = {
 	setReserved: function(key,value) {
@@ -606,7 +758,7 @@ var haxe_io_Bytes = function(data) {
 	data.bytes = this.b;
 };
 $hxClasses["haxe.io.Bytes"] = haxe_io_Bytes;
-haxe_io_Bytes.__name__ = true;
+haxe_io_Bytes.__name__ = ["haxe","io","Bytes"];
 haxe_io_Bytes.alloc = function(length) {
 	return new haxe_io_Bytes(new ArrayBuffer(length));
 };
@@ -623,7 +775,7 @@ haxe_io_Error.OutsideBounds.__enum__ = haxe_io_Error;
 haxe_io_Error.Custom = function(e) { var $x = ["Custom",3,e]; $x.__enum__ = haxe_io_Error; return $x; };
 var haxe_io_FPHelper = function() { };
 $hxClasses["haxe.io.FPHelper"] = haxe_io_FPHelper;
-haxe_io_FPHelper.__name__ = true;
+haxe_io_FPHelper.__name__ = ["haxe","io","FPHelper"];
 haxe_io_FPHelper.i32ToFloat = function(i) {
 	var sign = 1 - (i >>> 31 << 1);
 	var exp = i >>> 23 & 255;
@@ -667,7 +819,7 @@ haxe_io_FPHelper.doubleToI64 = function(v) {
 };
 var haxe_rtti_Meta = function() { };
 $hxClasses["haxe.rtti.Meta"] = haxe_rtti_Meta;
-haxe_rtti_Meta.__name__ = true;
+haxe_rtti_Meta.__name__ = ["haxe","rtti","Meta"];
 haxe_rtti_Meta.getType = function(t) {
 	var meta = haxe_rtti_Meta.getMeta(t);
 	return meta == null || meta.obj == null?{ }:meta.obj;
@@ -711,14 +863,14 @@ haxe_web_DispatchError.DETooManyValues = ["DETooManyValues",4];
 haxe_web_DispatchError.DETooManyValues.__enum__ = haxe_web_DispatchError;
 var haxe_web_Redirect = function() { };
 $hxClasses["haxe.web.Redirect"] = haxe_web_Redirect;
-haxe_web_Redirect.__name__ = true;
+haxe_web_Redirect.__name__ = ["haxe","web","Redirect"];
 var haxe_web_Dispatch = function(url,params) {
 	this.parts = url.split("/");
 	if(this.parts[0] == "") this.parts.shift();
 	this.params = params;
 };
 $hxClasses["haxe.web.Dispatch"] = haxe_web_Dispatch;
-haxe_web_Dispatch.__name__ = true;
+haxe_web_Dispatch.__name__ = ["haxe","web","Dispatch"];
 haxe_web_Dispatch.extractConfig = function(obj) {
 	var tmp;
 	var o = obj;
@@ -898,14 +1050,14 @@ var js__$Boot_HaxeError = function(val) {
 	if(Error.captureStackTrace) Error.captureStackTrace(this,js__$Boot_HaxeError);
 };
 $hxClasses["js._Boot.HaxeError"] = js__$Boot_HaxeError;
-js__$Boot_HaxeError.__name__ = true;
+js__$Boot_HaxeError.__name__ = ["js","_Boot","HaxeError"];
 js__$Boot_HaxeError.__super__ = Error;
 js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 	__class__: js__$Boot_HaxeError
 });
 var js_Boot = function() { };
 $hxClasses["js.Boot"] = js_Boot;
-js_Boot.__name__ = true;
+js_Boot.__name__ = ["js","Boot"];
 js_Boot.getClass = function(o) {
 	if((o instanceof Array) && o.__enum__ == null) return Array; else {
 		var cl = o.__class__;
@@ -1054,7 +1206,7 @@ var js_html_compat_ArrayBuffer = function(a) {
 	}
 };
 $hxClasses["js.html.compat.ArrayBuffer"] = js_html_compat_ArrayBuffer;
-js_html_compat_ArrayBuffer.__name__ = true;
+js_html_compat_ArrayBuffer.__name__ = ["js","html","compat","ArrayBuffer"];
 js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
 	var u = new Uint8Array(this,begin,end == null?null:end - begin);
 	var result = new ArrayBuffer(u.byteLength);
@@ -1075,7 +1227,7 @@ var js_html_compat_DataView = function(buffer,byteOffset,byteLength) {
 	if(this.offset < 0 || this.length < 0 || this.offset + this.length > buffer.byteLength) throw new js__$Boot_HaxeError(haxe_io_Error.OutsideBounds);
 };
 $hxClasses["js.html.compat.DataView"] = js_html_compat_DataView;
-js_html_compat_DataView.__name__ = true;
+js_html_compat_DataView.__name__ = ["js","html","compat","DataView"];
 js_html_compat_DataView.prototype = {
 	getInt8: function(byteOffset) {
 		var v = this.buf.a[this.offset + byteOffset];
@@ -1164,7 +1316,7 @@ js_html_compat_DataView.prototype = {
 };
 var js_html_compat_Uint8Array = function() { };
 $hxClasses["js.html.compat.Uint8Array"] = js_html_compat_Uint8Array;
-js_html_compat_Uint8Array.__name__ = true;
+js_html_compat_Uint8Array.__name__ = ["js","html","compat","Uint8Array"];
 js_html_compat_Uint8Array._new = function(arg1,offset,length) {
 	var arr;
 	if(typeof(arg1) == "number") {
@@ -1223,9 +1375,266 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	a.byteOffset = start;
 	return a;
 };
+var minject_Injector = function(parent) {
+	this.infos = new haxe_ds_StringMap();
+	this.mappings = new haxe_ds_StringMap();
+	this.parent = parent;
+};
+$hxClasses["minject.Injector"] = minject_Injector;
+minject_Injector.__name__ = ["minject","Injector"];
+minject_Injector.prototype = {
+	mapType: function(type,name,value) {
+		var key = this.getMappingKey(type,name);
+		var tmp;
+		var _this = this.mappings;
+		if(__map_reserved[key] != null) tmp = _this.existsReserved(key); else tmp = _this.h.hasOwnProperty(key);
+		if(tmp) {
+			var tmp1;
+			var _this1 = this.mappings;
+			if(__map_reserved[key] != null) tmp1 = _this1.getReserved(key); else tmp1 = _this1.h[key];
+			return tmp1;
+		}
+		var mapping = new minject_InjectorMapping(type,name);
+		var _this2 = this.mappings;
+		if(__map_reserved[key] != null) _this2.setReserved(key,mapping); else _this2.h[key] = mapping;
+		return mapping;
+	}
+	,findMappingForType: function(type,name) {
+		var tmp;
+		var key = this.getMappingKey(type,name);
+		var _this = this.mappings;
+		if(__map_reserved[key] != null) tmp = _this.getReserved(key); else tmp = _this.h[key];
+		var mapping = tmp;
+		if(mapping != null && mapping.provider != null) return mapping;
+		if(this.parent != null) return this.parent.findMappingForType(type,name);
+		return null;
+	}
+	,getValueForType: function(type,name) {
+		var mapping = this.findMappingForType(type,name);
+		if(mapping != null) return mapping.getValue(this);
+		var index = type.indexOf("<");
+		if(index > -1) mapping = this.findMappingForType(HxOverrides.substr(type,0,index),name);
+		if(mapping != null) return mapping.getValue(this);
+		return null;
+	}
+	,injectInto: function(target) {
+		var tmp;
+		if(target == null) tmp = null; else tmp = js_Boot.getClass(target);
+		var info = this.getInfo(tmp);
+		if(info == null) return;
+		var _g = 0;
+		var _g1 = info.fields;
+		while(_g < _g1.length) {
+			var field = _g1[_g];
+			++_g;
+			field.applyInjection(target,this);
+		}
+	}
+	,_construct: function(type) {
+		var info = this.getInfo(type);
+		return info.ctor.createInstance(type,this);
+	}
+	,_instantiate: function(type) {
+		var instance = this._construct(type);
+		this.injectInto(instance);
+		return instance;
+	}
+	,getInfo: function(forClass) {
+		var type = Type.getClassName(forClass);
+		var tmp;
+		var _this = this.infos;
+		if(__map_reserved[type] != null) tmp = _this.existsReserved(type); else tmp = _this.h.hasOwnProperty(type);
+		if(tmp) {
+			var tmp1;
+			var _this1 = this.infos;
+			if(__map_reserved[type] != null) tmp1 = _this1.getReserved(type); else tmp1 = _this1.h[type];
+			return tmp1;
+		}
+		var info = this.createInfo(forClass);
+		var _this2 = this.infos;
+		if(__map_reserved[type] != null) _this2.setReserved(type,info); else _this2.h[type] = info;
+		return info;
+	}
+	,createInfo: function(forClass) {
+		var info = new minject_InjectorInfo(null,[]);
+		this.addClassToInfo(forClass,info,[]);
+		haxe_ds_ArraySort.sort(info.fields,function(p1,p2) {
+			var post1 = (p1 instanceof minject_point_PostInjectionPoint)?p1:null;
+			var post2 = (p2 instanceof minject_point_PostInjectionPoint)?p2:null;
+			var tmp;
+			if(post1 == null) {
+				if(post2 == null) tmp = 0; else switch(post2) {
+				default:
+					tmp = -1;
+				}
+			} else switch(post1) {
+			default:
+				if(post2 == null) tmp = 1; else switch(post2) {
+				default:
+					tmp = post1.order - post2.order;
+				}
+			}
+			return tmp;
+		});
+		if(info.ctor == null) info.ctor = new minject_point_ConstructorInjectionPoint([]);
+		return info;
+	}
+	,addClassToInfo: function(forClass,info,injected) {
+		var meta = haxe_rtti_Meta.getType(forClass);
+		var fields = meta.rtti;
+		if(fields != null) {
+			var _g = 0;
+			while(_g < fields.length) {
+				var field = fields[_g];
+				++_g;
+				var name = field[0];
+				if(HxOverrides.indexOf(injected,name,0) > -1) continue;
+				injected.push(name);
+				if(field.length == 3) info.fields.push(new minject_point_PropertyInjectionPoint(name,field[1],field[2])); else if(name == "new") info.ctor = new minject_point_ConstructorInjectionPoint(field.slice(2)); else {
+					var orderStr = field[1];
+					if(orderStr == "") info.fields.push(new minject_point_MethodInjectionPoint(name,field.slice(2))); else {
+						var order = Std.parseInt(orderStr);
+						info.fields.push(new minject_point_PostInjectionPoint(name,field.slice(2),order));
+					}
+				}
+			}
+		}
+		var superClass = Type.getSuperClass(forClass);
+		if(superClass != null) this.addClassToInfo(superClass,info,injected);
+	}
+	,getMappingKey: function(type,name) {
+		if(name == null) name = "";
+		return "" + type + "#" + name;
+	}
+	,__class__: minject_Injector
+};
+var minject_InjectorInfo = function(ctor,fields) {
+	this.ctor = ctor;
+	this.fields = fields;
+};
+$hxClasses["minject.InjectorInfo"] = minject_InjectorInfo;
+minject_InjectorInfo.__name__ = ["minject","InjectorInfo"];
+minject_InjectorInfo.prototype = {
+	__class__: minject_InjectorInfo
+};
+var minject_InjectorMapping = function(type,name) {
+	this.type = type;
+	this.name = name;
+};
+$hxClasses["minject.InjectorMapping"] = minject_InjectorMapping;
+minject_InjectorMapping.__name__ = ["minject","InjectorMapping"];
+minject_InjectorMapping.prototype = {
+	getValue: function(injector) {
+		if(this.injector != null) injector = this.injector;
+		if(this.provider != null) return this.provider.getValue(injector);
+		var parent = injector.findMappingForType(this.type,this.name);
+		if(parent != null) return parent.getValue(injector);
+		return null;
+	}
+	,toValue: function(value) {
+		return this.toProvider(new minject_provider_ValueProvider(value));
+	}
+	,toProvider: function(provider) {
+		this.provider = provider;
+		return this;
+	}
+	,__class__: minject_InjectorMapping
+};
+var minject_point_InjectionPoint = function() { };
+$hxClasses["minject.point.InjectionPoint"] = minject_point_InjectionPoint;
+minject_point_InjectionPoint.__name__ = ["minject","point","InjectionPoint"];
+minject_point_InjectionPoint.prototype = {
+	__class__: minject_point_InjectionPoint
+};
+var minject_point_MethodInjectionPoint = function(field,args) {
+	this.field = field;
+	this.args = args;
+};
+$hxClasses["minject.point.MethodInjectionPoint"] = minject_point_MethodInjectionPoint;
+minject_point_MethodInjectionPoint.__name__ = ["minject","point","MethodInjectionPoint"];
+minject_point_MethodInjectionPoint.__interfaces__ = [minject_point_InjectionPoint];
+minject_point_MethodInjectionPoint.prototype = {
+	applyInjection: function(target,injector) {
+		var func = Reflect.field(target,this.field);
+		var args = this.gatherArgs(target,injector);
+		func.apply(target,args);
+		return target;
+	}
+	,gatherArgs: function(target,injector) {
+		var values = [];
+		var index = 0;
+		while(index < this.args.length) {
+			var type = this.args[index++];
+			var argName = this.args[index++];
+			this.args[index++] == "o";
+			var response = injector.getValueForType(type,argName);
+			values.push(response);
+		}
+		return values;
+	}
+	,__class__: minject_point_MethodInjectionPoint
+};
+var minject_point_ConstructorInjectionPoint = function(args) {
+	minject_point_MethodInjectionPoint.call(this,"new",args);
+};
+$hxClasses["minject.point.ConstructorInjectionPoint"] = minject_point_ConstructorInjectionPoint;
+minject_point_ConstructorInjectionPoint.__name__ = ["minject","point","ConstructorInjectionPoint"];
+minject_point_ConstructorInjectionPoint.__super__ = minject_point_MethodInjectionPoint;
+minject_point_ConstructorInjectionPoint.prototype = $extend(minject_point_MethodInjectionPoint.prototype,{
+	createInstance: function(type,injector) {
+		return Type.createInstance(type,this.gatherArgs(type,injector));
+	}
+	,__class__: minject_point_ConstructorInjectionPoint
+});
+var minject_point_PostInjectionPoint = function(field,args,order) {
+	minject_point_MethodInjectionPoint.call(this,field,args);
+	this.order = order;
+};
+$hxClasses["minject.point.PostInjectionPoint"] = minject_point_PostInjectionPoint;
+minject_point_PostInjectionPoint.__name__ = ["minject","point","PostInjectionPoint"];
+minject_point_PostInjectionPoint.__super__ = minject_point_MethodInjectionPoint;
+minject_point_PostInjectionPoint.prototype = $extend(minject_point_MethodInjectionPoint.prototype,{
+	__class__: minject_point_PostInjectionPoint
+});
+var minject_point_PropertyInjectionPoint = function(field,type,name) {
+	this.field = field;
+	this.type = type;
+	this.name = name;
+};
+$hxClasses["minject.point.PropertyInjectionPoint"] = minject_point_PropertyInjectionPoint;
+minject_point_PropertyInjectionPoint.__name__ = ["minject","point","PropertyInjectionPoint"];
+minject_point_PropertyInjectionPoint.__interfaces__ = [minject_point_InjectionPoint];
+minject_point_PropertyInjectionPoint.prototype = {
+	applyInjection: function(target,injector) {
+		var response = injector.getValueForType(this.type,this.name);
+		var field = this.field;
+		var tmp;
+		if(target.__properties__ && (tmp = target.__properties__["set_" + field])) target[tmp](response); else target[field] = response;
+		return target;
+	}
+	,__class__: minject_point_PropertyInjectionPoint
+};
+var minject_provider_DependencyProvider = function() { };
+$hxClasses["minject.provider.DependencyProvider"] = minject_provider_DependencyProvider;
+minject_provider_DependencyProvider.__name__ = ["minject","provider","DependencyProvider"];
+minject_provider_DependencyProvider.prototype = {
+	__class__: minject_provider_DependencyProvider
+};
+var minject_provider_ValueProvider = function(value) {
+	this.value = value;
+};
+$hxClasses["minject.provider.ValueProvider"] = minject_provider_ValueProvider;
+minject_provider_ValueProvider.__name__ = ["minject","provider","ValueProvider"];
+minject_provider_ValueProvider.__interfaces__ = [minject_provider_DependencyProvider];
+minject_provider_ValueProvider.prototype = {
+	getValue: function(injector) {
+		return this.value;
+	}
+	,__class__: minject_provider_ValueProvider
+};
 var pushstate_PushState = function() { };
 $hxClasses["pushstate.PushState"] = pushstate_PushState;
-pushstate_PushState.__name__ = true;
+pushstate_PushState.__name__ = ["pushstate","PushState"];
 pushstate_PushState.init = function(basePath,triggerFirst,ignoreAnchors) {
 	if(ignoreAnchors == null) ignoreAnchors = true;
 	if(triggerFirst == null) triggerFirst = true;
@@ -1477,20 +1886,9 @@ pushstate_PushState.push = function(url,state,uploads) {
 	pushstate_PushState.dispatch(strippedURL,state,uploads);
 	return true;
 };
-var tink_core__$Callback_CallbackLink_$Impl_$ = {};
-$hxClasses["tink.core._Callback.CallbackLink_Impl_"] = tink_core__$Callback_CallbackLink_$Impl_$;
-tink_core__$Callback_CallbackLink_$Impl_$.__name__ = true;
-tink_core__$Callback_CallbackLink_$Impl_$.toCallback = function(this1) {
-	var tmp;
-	var f = this1;
-	tmp = function(r) {
-		f();
-	};
-	return tmp;
-};
 var tink_core__$Callback_CallbackList_$Impl_$ = {};
 $hxClasses["tink.core._Callback.CallbackList_Impl_"] = tink_core__$Callback_CallbackList_$Impl_$;
-tink_core__$Callback_CallbackList_$Impl_$.__name__ = true;
+tink_core__$Callback_CallbackList_$Impl_$.__name__ = ["tink","core","_Callback","CallbackList_Impl_"];
 tink_core__$Callback_CallbackList_$Impl_$.add = function(this1,cb) {
 	var tmp;
 	var tmp1;
@@ -1516,18 +1914,9 @@ tink_core__$Callback_CallbackList_$Impl_$.invoke = function(this1,data) {
 		if(cell[0] != null) cell[0](data);
 	}
 };
-tink_core__$Callback_CallbackList_$Impl_$.clear = function(this1) {
-	var _g = 0;
-	var _g1 = this1.splice(0,this1.length);
-	while(_g < _g1.length) {
-		var cell = _g1[_g];
-		++_g;
-		cell[0] = null;
-	}
-};
 var tink_core_TypedError = function() { };
 $hxClasses["tink.core.TypedError"] = tink_core_TypedError;
-tink_core_TypedError.__name__ = true;
+tink_core_TypedError.__name__ = ["tink","core","TypedError"];
 tink_core_TypedError.prototype = {
 	printPos: function() {
 		return this.pos.className + "." + this.pos.methodName + ":" + this.pos.lineNumber;
@@ -1542,56 +1931,22 @@ tink_core_TypedError.prototype = {
 	}
 	,__class__: tink_core_TypedError
 };
-var tink_core__$Future_Future_$Impl_$ = {};
-$hxClasses["tink.core._Future.Future_Impl_"] = tink_core__$Future_Future_$Impl_$;
-tink_core__$Future_Future_$Impl_$.__name__ = true;
-tink_core__$Future_Future_$Impl_$._new = function(f) {
-	return f;
-};
-var tink_core_FutureTrigger = function() {
-	var _g = this;
-	this.list = [];
-	this.future = tink_core__$Future_Future_$Impl_$._new(function(callback) {
-		var tmp;
-		if(_g.list == null) {
-			callback(_g.result);
-			tmp = null;
-		} else tmp = tink_core__$Callback_CallbackList_$Impl_$.add(_g.list,callback);
-		return tmp;
-	});
-};
-$hxClasses["tink.core.FutureTrigger"] = tink_core_FutureTrigger;
-tink_core_FutureTrigger.__name__ = true;
-tink_core_FutureTrigger.prototype = {
-	trigger: function(result) {
-		var tmp;
-		if(this.list == null) tmp = false; else {
-			var list = this.list;
-			this.list = null;
-			this.result = result;
-			tink_core__$Callback_CallbackList_$Impl_$.invoke(list,result);
-			tink_core__$Callback_CallbackList_$Impl_$.clear(list);
-			tmp = true;
-		}
-		return tmp;
-	}
-	,__class__: tink_core_FutureTrigger
-};
 var tink_core__$Signal_Signal_$Impl_$ = {};
 $hxClasses["tink.core._Signal.Signal_Impl_"] = tink_core__$Signal_Signal_$Impl_$;
-tink_core__$Signal_Signal_$Impl_$.__name__ = true;
-tink_core__$Signal_Signal_$Impl_$.next = function(this1) {
-	var ret = new tink_core_FutureTrigger();
-	var handler = tink_core__$Callback_CallbackLink_$Impl_$.toCallback(this1($bind(ret,ret.trigger)));
-	this1(handler);
-	return ret.future;
+tink_core__$Signal_Signal_$Impl_$.__name__ = ["tink","core","_Signal","Signal_Impl_"];
+tink_core__$Signal_Signal_$Impl_$.gather = function(this1) {
+	var ret = tink_core__$Signal_Signal_$Impl_$.trigger();
+	this1(function(x) {
+		tink_core__$Callback_CallbackList_$Impl_$.invoke(ret,x);
+	});
+	return tink_core__$Signal_SignalTrigger_$Impl_$.asSignal(ret);
 };
 tink_core__$Signal_Signal_$Impl_$.trigger = function() {
 	return [];
 };
 var tink_core__$Signal_SignalTrigger_$Impl_$ = {};
 $hxClasses["tink.core._Signal.SignalTrigger_Impl_"] = tink_core__$Signal_SignalTrigger_$Impl_$;
-tink_core__$Signal_SignalTrigger_$Impl_$.__name__ = true;
+tink_core__$Signal_SignalTrigger_$Impl_$.__name__ = ["tink","core","_Signal","SignalTrigger_Impl_"];
 tink_core__$Signal_SignalTrigger_$Impl_$.asSignal = function(this1) {
 	var tmp;
 	var _e = this1;
@@ -1600,16 +1955,14 @@ tink_core__$Signal_SignalTrigger_$Impl_$.asSignal = function(this1) {
 	};
 	return tmp;
 };
-var $_, $fid = 0;
-function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
 $hxClasses.Math = Math;
 String.prototype.__class__ = $hxClasses.String = String;
-String.__name__ = true;
+String.__name__ = ["String"];
 $hxClasses.Array = Array;
-Array.__name__ = true;
+Array.__name__ = ["Array"];
 Date.prototype.__class__ = $hxClasses.Date = Date;
 Date.__name__ = ["Date"];
 var Int = $hxClasses.Int = { __name__ : ["Int"]};
@@ -1635,7 +1988,8 @@ var ArrayBuffer = (Function("return typeof ArrayBuffer != 'undefined' ? ArrayBuf
 if(ArrayBuffer.prototype.slice == null) ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 var DataView = (Function("return typeof DataView != 'undefined' ? DataView : null"))() || js_html_compat_DataView;
 var Uint8Array = (Function("return typeof Uint8Array != 'undefined' ? Uint8Array : null"))() || js_html_compat_Uint8Array._new;
-Api.__meta__ = { obj : { dispatchConfig : ["oy4:userjy21:haxe.web.DispatchRule:1:1ahg"]}};
+Api.__meta__ = { obj : { dispatchConfig : ["oy4:userjy21:haxe.web.DispatchRule:1:1ahy7:defaultjR1:1:1ahg"]}, fields : { enviroment : { inject : ["enviroment"]}}};
+haxe_IMap.__meta__ = { obj : { 'interface' : null}};
 haxe_Unserializer.DEFAULT_RESOLVER = Type;
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe_ds_ObjectMap.count = 0;
@@ -1647,6 +2001,8 @@ haxe_io_FPHelper.i64tmp = (function($this) {
 }(this));
 js_Boot.__toStr = {}.toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
+minject_point_InjectionPoint.__meta__ = { obj : { 'interface' : null}};
+minject_provider_DependencyProvider.__meta__ = { obj : { 'interface' : null}};
 pushstate_PushState.ignoreAnchors = true;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

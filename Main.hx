@@ -1,18 +1,8 @@
 import pushstate.PushState;
 import haxe.web.Dispatch;
-
+import minject.Injector;
 using tink.CoreApi;
-
-
-class Api {
-    public function new() {
-    }
-    function doUser() {
-        trace("CALLED");
-    }
-}
-//.....
-
+import Api;
 
 
 @:tink class Main {
@@ -23,11 +13,21 @@ class Api {
     var handlers:SignalTrigger<String>;
 
     signal = handlers = Signal.trigger();
-    @when(signal.next()) @do(v) Dispatch.run(v,new Map(),new Api());
 
+    @whenever(signal.gather()) @do(v) {
+      var injector = new Injector();
+      injector.map(String,'enviroment').toValue('fff');
 
-    PushState.addEventListener() => @do(url)  handlers.trigger(url);
+      if (v =='/pippa.html') v = "";
 
+      var api:Api = injector.instantiate(Api);
+      Dispatch.run(v,new Map(),api);
+    }
+
+    PushState.addEventListener() => @do(url)  {
+      trace(url);
+      handlers.trigger(url);
+    }
   }
 
   public static function main() {
